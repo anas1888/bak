@@ -10,4 +10,3 @@ console.log('\n\n╭⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯ 》') console.lo
 
 console.log('Generando código QR...'); start('main.js');
 
-  
