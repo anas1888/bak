@@ -6,7 +6,7 @@ import { setupMaster, fork } from 'cluster'
 import { watchFile, unwatchFile } from 'fs'
 import cfonts from 'cfonts'
 import { createInterface } from 'readline'
-import bwipjs from 'bwip-js'; // مكتبة لإنشاء الباركود
+import yargs from 'yargs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const require = createRequire(__dirname)
@@ -18,15 +18,19 @@ say('LoliBot-MD', {
   font: 'chrome',
   align: 'center',
   gradient: ['red', 'magenta']
-});
+})
 say(`by: elrebelde21`, {
   font: 'console',
   align: 'center',
   gradient: ['red', 'magenta']
-});
+})
 
-let isRunning = false;
+let isRunning = false
 
+/**
+ * Start a js file
+ * @param {String} file `path/to/file`
+ */
 function start(file) {
   if (isRunning) return
   isRunning = true
@@ -37,6 +41,7 @@ function start(file) {
     args: args.slice(1)
   })
   const p = fork()
+
   p.on('message', (data) => {
     switch (data) {
       case 'reset':
@@ -49,6 +54,7 @@ function start(file) {
         break
     }
   })
+
   p.on('exit', (_, code) => {
     isRunning = false;
     console.error('⚠️ Error Inesperado ⚠️', code)
@@ -61,28 +67,17 @@ function start(file) {
       process.exit()
     }
   })
-  const opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())
+
+  // إرسال الخيار 1 تلقائيًا
+  const opts = new Object(yargs(['1']).exitProcess(false).parse())
+  
   if (!opts['test']) {
     if (!rl.listenerCount()) {
       rl.on('line', (line) => {
-        // توليد الباركود
-        bwipjs.toBuffer({
-          bcid: 'code128',  // نوع الباركود
-          text: line.trim(), // النص الذي تم إدخاله
-          scale: 3, // حجم الباركود
-          height: 10, // ارتفاع الباركود
-          includetext: true, // تضمين النص تحت الباركود
-        }, (err, png) => {
-          if (err) {
-            console.error('Error generating barcode:', err);
-          } else {
-            // إرسال الباركود عبر message
-            p.send(png);
-          }
-        });
-      });
+        p.emit('message', line.trim())
+      })
     }
   }
 }
 
-start('main.js');
+start('main.js')
