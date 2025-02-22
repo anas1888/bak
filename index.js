@@ -8,6 +8,7 @@ import { watchFile, unwatchFile } from 'fs';
 import cfonts from 'cfonts';
 import { createInterface } from 'readline';
 import yargs from 'yargs';
+import QRCode from 'qrcode-terminal';  // مكتبة لعرض الباركود في الترمينال
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(__dirname);
@@ -71,4 +72,13 @@ console.log('┊ Opción 1: Código QR.');
 console.log('┊ Conectando automáticamente mediante código QR...\n╰⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯');
 
 console.log('Generando código QR...');
+
+// هنا نقوم بتوليد الباركود (QR Code) وعرضه مباشرة في الترمينال
+const data = 'https://example.com'; // يمكنك تغيير الرابط أو البيانات هنا
+QRCode.generate(data, { small: true }, (qrCode) => {
+    console.log('تم إنشاء الباركود وعرضه في الـ Shell!');
+    console.log(qrCode); // هنا يتم عرض الباركود في الـ terminal
+});
+
+// بدء الملف
 start('main.js');
